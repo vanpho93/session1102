@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const parser = require('body-parser').urlencoded({ extended: false });
-const { checkLogin } = require('./db');
+const { checkLogin, insertUser } = require('./db');
 
 const app = express();
 app.use(session({
@@ -60,5 +60,14 @@ app.get('/giaodich', (req, res) => {
     res.send('Vui long dang nhap');
 });
 
+app.get('/dangky', (req, res) => res.render('dangky'));
+
+app.post('/dangky', parser, (req, res) => {
+    const { username, password } = req.body;
+    insertUser(username, password, (err, result) => {
+        if (err) return res.send(`${err} `);
+        res.send('Dang ky thanh cong');
+    });
+});
 //User: {username, password} dang nhap, giao dich => Moi giao dich 
 //Dang nhap => redirect giaodich

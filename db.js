@@ -30,11 +30,16 @@ function checkLogin(username, password, cb) {
     queryDB(sql, [username, password], cb);
 }
 
+function insertUser(username, password, cb) {
+    const sql = 'INSERT INTO public."User"( username, password ) VALUES ($1, $2)';
+    queryDB(sql, [username, password], cb);
+}
+
 // checkLogin('pho1', 'abc', (err, result) => {
 //     if (err) return console.log(`${err}`);
 //     if (result.rows.length === 0) return console.log('Kiem tra lai thong tin');
 //     console.log('Dang nhap thanh cong');
 // });
 
-module.exports = { checkLogin };
+module.exports = { checkLogin, insertUser };
 
