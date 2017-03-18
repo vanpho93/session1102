@@ -1,5 +1,7 @@
 const express = require('express');
 const session = require('express-session');
+const parser = require('body-parser').urlencoded({ extended: false });
+const { checkLogin } = require('./db');
 
 const app = express();
 app.use(session({
@@ -10,6 +12,10 @@ app.use(session({
         maxAge: 5000
     }
 }));
+
+app.set('view engine', 'ejs');
+app.set('views', './views');
+app.use(express.static('public'));
 
 app.listen(3000, () => console.log('Server started'));
 
@@ -29,6 +35,29 @@ app.get('/muave', (req, res) => {
     request.session.daMuaVe = 1;
     request.session.username = 'PHO';
     res.send('Ban da mua ve');
+});
+
+app.get('/dangnhap', (req, res) => {
+    res.render('dangnhap');
+});
+
+app.post('/dangnhap', parser, (req, res) => {
+    const { username, password } = req.body;
+    // console.log(username, password);
+    // res.send('XONG');
+    checkLogin(username, password, (err, result) => {
+        if (err) return res.send(`${err} `);
+        if (result.rows.length === 0) return res.send('Kiem tra lai thong tin');
+        req.session.daDangNhap = 1;
+        res.send('Dang nhap thanh cong');
+    });
+});
+
+app.get('/giaodich', (req, res) => {
+    if (typeof req.session.daDangNhap === 'number') {
+        return res.send('Giao dich');
+    } 
+    res.send('Vui long dang nhap');
 });
 
 //User: {username, password} dang nhap, giao dich => Moi giao dich 

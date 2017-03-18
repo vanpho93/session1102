@@ -30,8 +30,11 @@ function checkLogin(username, password, cb) {
     queryDB(sql, cb);
 }
 
-checkLogin('pho1', 'abc', (err, result) => {
-    if (err) return console.log(`${err}`);
-    if (result.rows.length === 0) return console.log('Kiem tra lai thong tin');
-    console.log('Dang nhap thanh cong');
-});
+// checkLogin('pho1', 'abc', (err, result) => {
+//     if (err) return console.log(`${err}`);
+//     if (result.rows.length === 0) return console.log('Kiem tra lai thong tin');
+//     console.log('Dang nhap thanh cong');
+// });
+
+module.exports = { checkLogin };
+
