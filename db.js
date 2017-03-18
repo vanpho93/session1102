@@ -12,10 +12,10 @@ const config = {
 
 const pool = new pg.Pool(config);
 
-function queryDB(sql, cb) {
+function queryDB(sql, arrayData, cb) {
     pool.connect((err, client, done) => {
         if (err) return cb(`${err} `);
-        client.query(sql, (queryErr, result) => {
+        client.query(sql, arrayData, (queryErr, result) => {
             done(queryErr);
             if (queryErr) return cb(`${queryErr} `);
             cb(undefined, result);
@@ -26,8 +26,8 @@ function queryDB(sql, cb) {
 function checkLogin(username, password, cb) {
     const sql = `SELECT username, password 
     FROM public."User" 
-    WHERE username='${username}' AND "password"='${password}'`;
-    queryDB(sql, cb);
+    WHERE username=$1 AND "password"=$2`;
+    queryDB(sql, [username, password], cb);
 }
 
 // checkLogin('pho1', 'abc', (err, result) => {
