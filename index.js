@@ -16,14 +16,20 @@ app.listen(3000, () => console.log('Server started'));
 app.get('/', (req, res) => res.send('Hello'));
 
 app.get('/vaorap', (req, res) => {
+    const request = req;
     if (typeof req.session.daMuaVe === 'number') {
-        req.session.daMuaVe++;
-        return res.send('Moi xem phim');
+        request.session.daMuaVe++;
+        return res.send(`${request.session.username} Moi xem phim`);
     }
     res.send('Ban phai mua ve truoc');
 });
 
 app.get('/muave', (req, res) => {
-    req.session.daMuaVe = 1;
+    const request = req;
+    request.session.daMuaVe = 1;
+    request.session.username = 'PHO';
     res.send('Ban da mua ve');
 });
+
+//User: {username, password} dang nhap, giao dich => Moi giao dich 
+//Dang nhap => redirect giaodich
