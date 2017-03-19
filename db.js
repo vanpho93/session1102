@@ -1,4 +1,5 @@
 const pg = require('pg');
+const bcrypt = require('bcrypt');
 
 const config = {
   user: 'postgres',
@@ -31,8 +32,11 @@ function checkLogin(username, password, cb) {
 }
 
 function insertUser(username, password, cb) {
-    const sql = 'INSERT INTO public."User"( username, password ) VALUES ($1, $2)';
-    queryDB(sql, [username, password], cb);
+    //TODO here
+    bcrypt.hash(password, 10, (err, encrypt) => {
+        const sql = 'INSERT INTO public."User"( username, password ) VALUES ($1, $2)';
+        queryDB(sql, [username, encrypt], cb);
+    });
 }
 
 // checkLogin('pho1', 'abc', (err, result) => {
