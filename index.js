@@ -37,11 +37,25 @@ app.get('/muave', (req, res) => {
     res.send('Ban da mua ve');
 });
 
-app.get('/dangnhap', (req, res) => {
+const requireLogin = (req, res, next) => {
+    if (typeof req.session.daDangNhap !== 'number') {
+        return res.redirect('/dangnhap');
+    }
+    next();
+};
+
+const redirectIfLogedIn = (req, res, next) => {
+    if (typeof req.session.daDangNhap === 'number') {
+        return res.redirect('/giaodich');
+    }
+    next();
+};
+
+app.get('/dangnhap', redirectIfLogedIn, (req, res) => {
     res.render('dangnhap');
 });
 
-app.post('/dangnhap', parser, (req, res) => {
+app.post('/dangnhap', redirectIfLogedIn, parser, (req, res) => {
     const { username, password } = req.body;
     // console.log(username, password);
     // res.send('XONG');
@@ -52,22 +66,17 @@ app.post('/dangnhap', parser, (req, res) => {
     });
 });
 
-const requireLogin = (req, res, next) => {
-    if (typeof req.session.daDangNhap != 'number') {
-        return res.redirect('/dangnhap');
-    }
-    next();
-};
+
 
 app.get('/giaodich', requireLogin, (req, res) => {
     res.send('Giao dich');
 });
 
-app.get('/dangky', (req, res) => res.render('dangky'));
+app.get('/dangky', redirectIfLogedIn, (req, res) => res.render('dangky'));
 
-app.post('/dangky', parser, (req, res) => {
+app.post('/dangky', parser, redirectIfLogedIn, (req, res) => {
     const { username, password } = req.body;
-    insertUser(username, password, (err, result) => {
+    insertUser(username, password, (err) => {
         if (err) return res.send(`${err} `);
         res.send('Dang ky thanh cong');
     });
