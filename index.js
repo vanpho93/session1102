@@ -45,11 +45,9 @@ app.post('/dangnhap', parser, (req, res) => {
     const { username, password } = req.body;
     // console.log(username, password);
     // res.send('XONG');
-    checkLogin(username, password, (err, result) => {
+    checkLogin(username, password, err => {
         if (err) return res.send(`${err} `);
-        if (result.rows.length === 0) return res.send('Kiem tra lai thong tin');
-        req.session.daDangNhap = 1;
-        res.send('Dang nhap thanh cong');
+        res.send('Dang Nhap Thanh cong');
     });
 });
 

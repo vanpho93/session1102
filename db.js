@@ -24,11 +24,20 @@ function queryDB(sql, arrayData, cb) {
     });
 }
 
-function checkLogin(username, password, cb) {
+function checkLogin(username, plainPassword, cb) {
     const sql = `SELECT username, password 
     FROM public."User" 
-    WHERE username=$1 AND "password"=$2`;
-    queryDB(sql, [username, password], cb);
+    WHERE username=$1`;
+    queryDB(sql, [username], (err, result) => {
+        if (err) return cb(err);
+        if (result.rowCount === 0) return cb(new Error('Sai thong tin dang nhap'));
+        const { password } = result.rows[0];
+        bcrypt.compare(plainPassword, password, (errHash, same) => {
+            if (errHash) return cb(errHash);
+            if (!same) return cb(new Error('Sai thong tin dang nhap'));
+            cb(undefined);
+        });
+    });
 }
 
 function insertUser(username, password, cb) {
