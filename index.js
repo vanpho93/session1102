@@ -52,11 +52,15 @@ app.post('/dangnhap', parser, (req, res) => {
     });
 });
 
-app.get('/giaodich', (req, res) => {
-    if (typeof req.session.daDangNhap === 'number') {
-        return res.send('Giao dich');
-    } 
-    res.send('Vui long dang nhap');
+const requireLogin = (req, res, next) => {
+    if (typeof req.session.daDangNhap != 'number') {
+        return res.redirect('/dangnhap');
+    }
+    next();
+};
+
+app.get('/giaodich', requireLogin, (req, res) => {
+    res.send('Giao dich');
 });
 
 app.get('/dangky', (req, res) => res.render('dangky'));
