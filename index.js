@@ -47,6 +47,7 @@ app.post('/dangnhap', parser, (req, res) => {
     // res.send('XONG');
     checkLogin(username, password, err => {
         if (err) return res.send(`${err} `);
+        req.session.daDangNhap = 1;
         res.send('Dang Nhap Thanh cong');
     });
 });
